@@ -1,3 +1,9 @@
+---
+title: Home
+nav_order: 1
+permalink: /
+---
+
 # What this is
 
 SCI Healthcare is a way to pay for someone's medical care without handing over cash and hoping.

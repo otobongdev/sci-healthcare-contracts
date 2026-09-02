@@ -1,3 +1,8 @@
+---
+title: Funding care for someone
+nav_order: 6
+---
+
 # Funding care for someone
 
 You are paying for a specific treatment at a specific clinic, for yourself or for someone else.

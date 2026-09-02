@@ -1,3 +1,8 @@
+---
+title: Privacy
+nav_order: 5
+---
+
 # Privacy
 
 The single hardest rule in this project: **no protected health information reaches the ledger, ever.**

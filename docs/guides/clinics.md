@@ -1,3 +1,8 @@
+---
+title: Running a clinic
+nav_order: 7
+---
+
 # Running a clinic
 
 You are a clinic, pharmacy or lab that wants to be paid through the protocol.

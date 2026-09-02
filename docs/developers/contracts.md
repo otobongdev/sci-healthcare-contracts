@@ -1,3 +1,8 @@
+---
+title: Contract reference
+nav_order: 10
+---
+
 # Contract reference
 
 Three contracts. `registry` and `receipt` hold no references and deploy first; `voucher` points at both and deploys last.

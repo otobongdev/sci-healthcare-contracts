@@ -1,3 +1,8 @@
+---
+title: Local setup
+nav_order: 9
+---
+
 # Local setup
 
 Three repositories. Build them in this order — the app needs contract addresses that only exist after deployment.

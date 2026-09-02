@@ -1,3 +1,8 @@
+---
+title: Attesting delivery
+nav_order: 8
+---
+
 # Attesting delivery
 
 An attester confirms that care actually happened. This is the most important role in the protocol and the one carrying the most responsibility.

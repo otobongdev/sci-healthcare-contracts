@@ -1,3 +1,8 @@
+---
+title: Contributing
+nav_order: 12
+---
+
 # Contributing to SCI Healthcare Contracts
 
 Thanks for helping. This repo holds the Soroban contracts, so changes here move

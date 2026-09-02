@@ -1,3 +1,8 @@
+---
+title: API reference
+nav_order: 11
+---
+
 # API reference
 
 Base URL in local development: `http://localhost:8080`

@@ -3,7 +3,7 @@
 //! Field names here are part of the protocol's public interface: the
 //! indexer decodes these by name. Renaming a field is a breaking change.
 
-use soroban_sdk::{contractevent, Address};
+use soroban_sdk::{contractevent, Address, BytesN};
 
 #[contractevent]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -18,6 +18,10 @@ pub struct VoucherCreated {
     pub funder: Address,
     #[topic]
     pub provider: Address,
+    /// Indexed so a patient can find every voucher funded for them,
+    /// including ones not yet settled.
+    #[topic]
+    pub beneficiary_ref: BytesN<32>,
     pub voucher_id: u64,
     pub service_code: u32,
     pub amount: i128,

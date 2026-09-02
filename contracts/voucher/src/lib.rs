@@ -149,7 +149,7 @@ impl VoucherEscrow {
         let voucher = Voucher {
             id,
             funder: funder.clone(),
-            beneficiary_ref,
+            beneficiary_ref: beneficiary_ref.clone(),
             provider: provider.clone(),
             service_code,
             amount,
@@ -166,6 +166,7 @@ impl VoucherEscrow {
         VoucherCreated {
             funder,
             provider,
+            beneficiary_ref,
             voucher_id: id,
             service_code,
             amount,

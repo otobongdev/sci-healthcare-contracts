@@ -10,14 +10,19 @@
 //! No patient-identifying data is stored here, or anywhere else in this
 //! protocol. Services are coarse categories, never diagnoses.
 
+mod events;
 mod storage;
 mod types;
 
 #[cfg(test)]
 mod test;
 
-use soroban_sdk::{contract, contractimpl, symbol_short, Address, Env, String, Vec};
+use soroban_sdk::{contract, contractimpl, Address, Env, String, Vec};
 
+pub use events::{
+    AdminChanged, AttesterAdded, AttesterRemoved, Initialized, ProviderRegistered,
+    ProviderStatusChanged, ServiceRemoved, ServiceUpserted,
+};
 pub use types::{DataKey, Provider, ProviderStatus, RegistryError, ServiceItem};
 
 use storage::{
@@ -38,8 +43,7 @@ impl Registry {
         }
         write_admin(&env, &admin);
         extend_instance(&env);
-        env.events()
-            .publish((symbol_short!("init"),), admin);
+        Initialized { admin }.publish(&env);
         Ok(())
     }
 
@@ -66,18 +70,24 @@ impl Registry {
             return Err(RegistryError::ProviderExists);
         }
 
+        let registered_at = env.ledger().timestamp();
         let provider = Provider {
             owner: owner.clone(),
-            name,
-            country,
+            name: name.clone(),
+            country: country.clone(),
             status: ProviderStatus::Pending,
-            registered_at: env.ledger().timestamp(),
+            registered_at,
         };
         write_provider(&env, &owner, &provider);
         extend_instance(&env);
 
-        env.events()
-            .publish((symbol_short!("prov_reg"), owner), provider.registered_at);
+        ProviderRegistered {
+            provider: owner,
+            name,
+            country,
+            registered_at,
+        }
+        .publish(&env);
         Ok(())
     }
 
@@ -95,8 +105,11 @@ impl Registry {
         write_provider(&env, &provider_addr, &provider);
         extend_instance(&env);
 
-        env.events()
-            .publish((symbol_short!("prov_stat"), provider_addr), status);
+        ProviderStatusChanged {
+            provider: provider_addr,
+            status,
+        }
+        .publish(&env);
         Ok(())
     }
 
@@ -127,15 +140,20 @@ impl Registry {
 
         let item = ServiceItem {
             code,
-            label,
+            label: label.clone(),
             price,
             active: true,
         };
         write_service(&env, &provider_addr, code, &item);
         extend_instance(&env);
 
-        env.events()
-            .publish((symbol_short!("svc_up"), provider_addr, code), price);
+        ServiceUpserted {
+            provider: provider_addr,
+            code,
+            label,
+            price,
+        }
+        .publish(&env);
         Ok(())
     }
 
@@ -155,8 +173,11 @@ impl Registry {
         storage_remove_service(&env, &provider_addr, code);
         extend_instance(&env);
 
-        env.events()
-            .publish((symbol_short!("svc_rm"), provider_addr), code);
+        ServiceRemoved {
+            provider: provider_addr,
+            code,
+        }
+        .publish(&env);
         Ok(())
     }
 
@@ -165,8 +186,7 @@ impl Registry {
         Self::require_admin(&env, &admin)?;
         write_attester(&env, &attester, true);
         extend_instance(&env);
-        env.events()
-            .publish((symbol_short!("att_add"),), attester);
+        AttesterAdded { attester }.publish(&env);
         Ok(())
     }
 
@@ -179,8 +199,7 @@ impl Registry {
         Self::require_admin(&env, &admin)?;
         write_attester(&env, &attester, false);
         extend_instance(&env);
-        env.events()
-            .publish((symbol_short!("att_rm"),), attester);
+        AttesterRemoved { attester }.publish(&env);
         Ok(())
     }
 
@@ -189,8 +208,7 @@ impl Registry {
         Self::require_admin(&env, &admin)?;
         write_admin(&env, &new_admin);
         extend_instance(&env);
-        env.events()
-            .publish((symbol_short!("admin_set"),), new_admin);
+        AdminChanged { new_admin }.publish(&env);
         Ok(())
     }
 

@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/tests-69%20passing-brightgreen" alt="69 tests" />
 </p>
 
-# SCI Healthcare — Contracts | [Documentation](https://sci-healthcare.gitbook.io/docs)
+# SCI Healthcare — Contracts | [Documentation](https://otobongdev.github.io/sci-healthcare-contracts/)
 
 Soroban contracts for prepaid, purpose-bound care vouchers on Stellar.
 

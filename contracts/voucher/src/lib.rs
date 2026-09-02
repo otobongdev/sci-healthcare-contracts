@@ -44,8 +44,8 @@ use soroban_sdk::{contract, contractimpl, token, Address, BytesN, Env};
 
 #[allow(unused_imports)]
 pub use events::{
-    DisputeResolved, Initialized, VoucherAttested, VoucherClaimed, VoucherCreated,
-    VoucherDisputed, VoucherRefunded, VoucherSettled,
+    DisputeResolved, Initialized, VoucherAttested, VoucherClaimed, VoucherCreated, VoucherDisputed,
+    VoucherRefunded, VoucherSettled,
 };
 pub use interfaces::{ReceiptClient, RegistryClient};
 pub use types::{Config, DataKey, Voucher, VoucherError, VoucherStatus};
@@ -62,9 +62,11 @@ const MAX_FEE_BPS: u32 = 1_000;
 #[contract]
 pub struct VoucherEscrow;
 
+#[allow(clippy::too_many_arguments)]
 #[contractimpl]
 impl VoucherEscrow {
     /// Fixes protocol configuration. Callable exactly once.
+    #[allow(clippy::too_many_arguments)]
     pub fn initialize(
         env: Env,
         admin: Address,
@@ -142,8 +144,9 @@ impl VoucherEscrow {
 
         // Escrow first, record second: if the transfer fails the whole
         // invocation reverts and no voucher is written.
+        let escrow = env.current_contract_address();
         let token_client = token::Client::new(&env, &config.token);
-        token_client.transfer(&funder, &env.current_contract_address(), &amount);
+        token_client.transfer(&funder, &escrow, &amount);
 
         let id = bump_next_id(&env);
         let voucher = Voucher {
@@ -430,7 +433,7 @@ impl VoucherEscrow {
             net,
             fee,
         }
-        .publish(&env);
+        .publish(env);
         Ok(())
     }
 
@@ -451,6 +454,6 @@ impl VoucherEscrow {
             voucher_id: voucher.id,
             amount: voucher.amount,
         }
-        .publish(&env);
+        .publish(env);
     }
 }

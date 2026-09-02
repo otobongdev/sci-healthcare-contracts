@@ -21,7 +21,12 @@ fn setup() -> Fixture {
     let minter = Address::generate(&env);
     client.initialize(&admin, &minter);
 
-    Fixture { env, client, admin, minter }
+    Fixture {
+        env,
+        client,
+        admin,
+        minter,
+    }
 }
 
 fn bref(env: &Env, seed: u8) -> BytesN<32> {
@@ -54,8 +59,14 @@ fn minter_mints_receipt() {
     let provider = Address::generate(&f.env);
     let patient = bref(&f.env, 7);
 
-    f.client
-        .mint(&f.minter, &1u64, &patient, &provider, &101u32, &30_000_000i128);
+    f.client.mint(
+        &f.minter,
+        &1u64,
+        &patient,
+        &provider,
+        &101u32,
+        &30_000_000i128,
+    );
 
     let r = f.client.get_receipt(&1u64);
     assert_eq!(r.voucher_id, 1);
@@ -93,12 +104,25 @@ fn receipts_are_not_mintable_twice() {
     let provider = Address::generate(&f.env);
     let patient = bref(&f.env, 7);
 
-    f.client
-        .mint(&f.minter, &1u64, &patient, &provider, &101u32, &30_000_000i128);
+    f.client.mint(
+        &f.minter,
+        &1u64,
+        &patient,
+        &provider,
+        &101u32,
+        &30_000_000i128,
+    );
 
     let err = f
         .client
-        .try_mint(&f.minter, &1u64, &patient, &provider, &101u32, &30_000_000i128)
+        .try_mint(
+            &f.minter,
+            &1u64,
+            &patient,
+            &provider,
+            &101u32,
+            &30_000_000i128,
+        )
         .err()
         .unwrap()
         .unwrap();
@@ -112,7 +136,14 @@ fn non_positive_amount_rejected() {
 
     let err = f
         .client
-        .try_mint(&f.minter, &1u64, &bref(&f.env, 7), &provider, &101u32, &0i128)
+        .try_mint(
+            &f.minter,
+            &1u64,
+            &bref(&f.env, 7),
+            &provider,
+            &101u32,
+            &0i128,
+        )
         .err()
         .unwrap()
         .unwrap();
@@ -128,9 +159,12 @@ fn count_tracks_episodes_per_beneficiary() {
 
     assert_eq!(f.client.count_for(&alice), 0);
 
-    f.client.mint(&f.minter, &1u64, &alice, &provider, &101u32, &10i128);
-    f.client.mint(&f.minter, &2u64, &alice, &provider, &202u32, &20i128);
-    f.client.mint(&f.minter, &3u64, &bob, &provider, &101u32, &30i128);
+    f.client
+        .mint(&f.minter, &1u64, &alice, &provider, &101u32, &10i128);
+    f.client
+        .mint(&f.minter, &2u64, &alice, &provider, &202u32, &20i128);
+    f.client
+        .mint(&f.minter, &3u64, &bob, &provider, &101u32, &30i128);
 
     assert_eq!(f.client.count_for(&alice), 2);
     assert_eq!(f.client.count_for(&bob), 1);
@@ -154,7 +188,14 @@ fn admin_can_repoint_minter() {
     let provider = Address::generate(&f.env);
     let err = f
         .client
-        .try_mint(&f.minter, &1u64, &bref(&f.env, 7), &provider, &101u32, &10i128)
+        .try_mint(
+            &f.minter,
+            &1u64,
+            &bref(&f.env, 7),
+            &provider,
+            &101u32,
+            &10i128,
+        )
         .err()
         .unwrap()
         .unwrap();

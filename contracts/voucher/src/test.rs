@@ -5,7 +5,7 @@ use soroban_sdk::{
     token, Address, BytesN, Env, String,
 };
 
-use crate::{VoucherEscrow, VoucherEscrowClient, VoucherError, VoucherStatus};
+use crate::{VoucherError, VoucherEscrow, VoucherEscrowClient, VoucherStatus};
 use sci_receipt::{ReceiptBook, ReceiptBookClient};
 use sci_registry::{ProviderStatus, Registry, RegistryClient};
 
@@ -382,12 +382,7 @@ fn non_attester_cannot_attest() {
     let id = fund(&f);
     f.voucher.claim(&f.provider, &id);
 
-    let err = f
-        .voucher
-        .try_attest(&stranger, &id)
-        .err()
-        .unwrap()
-        .unwrap();
+    let err = f.voucher.try_attest(&stranger, &id).err().unwrap().unwrap();
     assert_eq!(err, VoucherError::NotAuthorized);
 }
 

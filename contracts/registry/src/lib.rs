@@ -59,7 +59,7 @@ impl Registry {
     ) -> Result<(), RegistryError> {
         owner.require_auth();
 
-        if name.len() == 0 {
+        if name.is_empty() {
             return Err(RegistryError::EmptyName);
         }
         // ISO 3166-1 alpha-2 is always two characters.
@@ -129,7 +129,7 @@ impl Registry {
         if price <= 0 {
             return Err(RegistryError::InvalidPrice);
         }
-        if label.len() == 0 {
+        if label.is_empty() {
             return Err(RegistryError::EmptyName);
         }
 

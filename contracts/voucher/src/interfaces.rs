@@ -13,7 +13,7 @@ pub trait RegistryInterface {
 }
 
 /// The slice of `sci-receipt` this contract depends on.
-#[allow(dead_code)]
+#[allow(dead_code, clippy::too_many_arguments)]
 #[contractclient(name = "ReceiptClient")]
 pub trait ReceiptInterface {
     fn mint(

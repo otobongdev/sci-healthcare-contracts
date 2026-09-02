@@ -2,7 +2,7 @@
 
 use soroban_sdk::{testutils::Address as _, Address, Env, String, Vec};
 
-use crate::{Registry, RegistryClient, RegistryError, ProviderStatus};
+use crate::{ProviderStatus, Registry, RegistryClient, RegistryError};
 
 struct Fixture {
     env: Env,
@@ -177,10 +177,15 @@ fn upsert_overwrites_price() {
     let provider = register_active_provider(&f);
     let label = String::from_str(&f.env, "Malaria RDT");
 
-    f.client.upsert_service(&provider, &202u32, &label, &10_000_000i128);
-    f.client.upsert_service(&provider, &202u32, &label, &12_500_000i128);
+    f.client
+        .upsert_service(&provider, &202u32, &label, &10_000_000i128);
+    f.client
+        .upsert_service(&provider, &202u32, &label, &12_500_000i128);
 
-    assert_eq!(f.client.get_service(&provider, &202u32).price, 12_500_000i128);
+    assert_eq!(
+        f.client.get_service(&provider, &202u32).price,
+        12_500_000i128
+    );
 }
 
 #[test]
@@ -363,7 +368,10 @@ fn service_price_view_returns_price() {
         &String::from_str(&f.env, "Consult"),
         &30_000_000i128,
     );
-    assert_eq!(f.client.get_service_price(&provider, &101u32), 30_000_000i128);
+    assert_eq!(
+        f.client.get_service_price(&provider, &101u32),
+        30_000_000i128
+    );
 }
 
 #[test]

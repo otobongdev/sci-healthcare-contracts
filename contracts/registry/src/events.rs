@@ -7,7 +7,6 @@ use soroban_sdk::{contractevent, Address, String};
 
 use crate::types::ProviderStatus;
 
-
 #[contractevent]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Initialized {

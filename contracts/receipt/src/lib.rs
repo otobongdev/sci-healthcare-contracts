@@ -165,9 +165,11 @@ impl ReceiptBook {
             settled_at,
         };
         env.storage().persistent().set(&key, &receipt);
-        env.storage()
-            .persistent()
-            .extend_ttl(&key, PERSISTENT_TTL_THRESHOLD, PERSISTENT_TTL_EXTEND);
+        env.storage().persistent().extend_ttl(
+            &key,
+            PERSISTENT_TTL_THRESHOLD,
+            PERSISTENT_TTL_EXTEND,
+        );
 
         let count_key = DataKey::Count(beneficiary_ref.clone());
         let count: u32 = env.storage().persistent().get(&count_key).unwrap_or(0);
@@ -197,9 +199,11 @@ impl ReceiptBook {
             .persistent()
             .get(&key)
             .ok_or(ReceiptError::ReceiptNotFound)?;
-        env.storage()
-            .persistent()
-            .extend_ttl(&key, PERSISTENT_TTL_THRESHOLD, PERSISTENT_TTL_EXTEND);
+        env.storage().persistent().extend_ttl(
+            &key,
+            PERSISTENT_TTL_THRESHOLD,
+            PERSISTENT_TTL_EXTEND,
+        );
         Ok(receipt)
     }
 

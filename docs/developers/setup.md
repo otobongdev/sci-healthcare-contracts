@@ -4,9 +4,9 @@ Three repositories. Build them in this order — the app needs contract addresse
 
 | Repo | What it is |
 | --- | --- |
-| [sci-healthcare-contracts](https://github.com/sci-healthcare/sci-healthcare-contracts) | Soroban contracts (Rust) |
-| [sci-healthcare-backend](https://github.com/sci-healthcare/sci-healthcare-backend) | Event indexer and read API |
-| [sci-healthcare-frontend](https://github.com/sci-healthcare/sci-healthcare-frontend) | Web app |
+| [sci-healthcare-contracts](https://github.com/otobongdev/sci-healthcare-contracts) | Soroban contracts (Rust) |
+| [sci-healthcare-backend](https://github.com/otobongdev/sci-healthcare-backend) | Event indexer and read API |
+| [sci-healthcare-frontend](https://github.com/otobongdev/sci-healthcare-frontend) | Web app |
 
 ## Prerequisites
 
@@ -27,7 +27,7 @@ cargo install --locked stellar-cli
 ## 1. Contracts
 
 ```bash
-git clone https://github.com/sci-healthcare/sci-healthcare-contracts
+git clone https://github.com/otobongdev/sci-healthcare-contracts
 cd sci-healthcare-contracts
 
 cargo test                                    # 69 tests
@@ -60,7 +60,7 @@ DISPUTE_WINDOW=60 ./scripts/deploy.sh testnet
 ## 2. Backend
 
 ```bash
-git clone https://github.com/sci-healthcare/sci-healthcare-backend
+git clone https://github.com/otobongdev/sci-healthcare-backend
 cd sci-healthcare-backend
 npm install
 cp .env.example .env
@@ -92,7 +92,7 @@ curl -s localhost:8080/ready | jq
 ## 3. Frontend
 
 ```bash
-git clone https://github.com/sci-healthcare/sci-healthcare-frontend
+git clone https://github.com/otobongdev/sci-healthcare-frontend
 cd sci-healthcare-frontend
 npm install
 cp .env.example .env.local

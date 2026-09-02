@@ -3,8 +3,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/sci-healthcare/sci-healthcare-contracts/actions/workflows/ci.yml">
-    <img src="https://github.com/sci-healthcare/sci-healthcare-contracts/actions/workflows/ci.yml/badge.svg" alt="CI" />
+  <a href="https://github.com/otobongdev/sci-healthcare-contracts/actions/workflows/ci.yml">
+    <img src="https://github.com/otobongdev/sci-healthcare-contracts/actions/workflows/ci.yml/badge.svg" alt="CI" />
   </a>
   <img src="https://img.shields.io/badge/soroban--sdk-27.0.6-blue" alt="soroban-sdk 27.0.6" />
   <img src="https://img.shields.io/badge/rust-1.96-orange" alt="rust 1.96" />
@@ -95,7 +95,7 @@ cargo install --locked stellar-cli
 ### Build and test
 
 ```bash
-git clone https://github.com/sci-healthcare/sci-healthcare-contracts
+git clone https://github.com/otobongdev/sci-healthcare-contracts
 cd sci-healthcare-contracts
 cargo test                                    # 69 tests
 cargo build --target wasm32v1-none --release  # three .wasm artifacts
@@ -159,9 +159,9 @@ There is deliberately no transfer function on receipts.
 
 | Repo | Purpose |
 | --- | --- |
-| [sci-healthcare-contracts](https://github.com/sci-healthcare/sci-healthcare-contracts) | Soroban contracts (this repo) |
-| [sci-healthcare-backend](https://github.com/sci-healthcare/sci-healthcare-backend) | Event indexer and read API |
-| [sci-healthcare-frontend](https://github.com/sci-healthcare/sci-healthcare-frontend) | Web app for funders, clinics and attesters |
+| [sci-healthcare-contracts](https://github.com/otobongdev/sci-healthcare-contracts) | Soroban contracts (this repo) |
+| [sci-healthcare-backend](https://github.com/otobongdev/sci-healthcare-backend) | Event indexer and read API |
+| [sci-healthcare-frontend](https://github.com/otobongdev/sci-healthcare-frontend) | Web app for funders, clinics and attesters |
 
 ## Contributing
 
@@ -169,8 +169,8 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) first. Issues labelled `good first issue
 
 ## Contributors
 
-<a href="https://github.com/sci-healthcare/sci-healthcare-contracts/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=sci-healthcare/sci-healthcare-contracts" />
+<a href="https://github.com/otobongdev/sci-healthcare-contracts/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=otobongdev/sci-healthcare-contracts" />
 </a>
 
 ## License

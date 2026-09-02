@@ -32,6 +32,7 @@
 //! with a separate attester role, a funder dispute window, and admin
 //! resolution — it does not eliminate it.
 
+mod events;
 mod interfaces;
 mod storage;
 mod types;
@@ -39,8 +40,13 @@ mod types;
 #[cfg(test)]
 mod test;
 
-use soroban_sdk::{contract, contractimpl, symbol_short, token, Address, BytesN, Env};
+use soroban_sdk::{contract, contractimpl, token, Address, BytesN, Env};
 
+#[allow(unused_imports)]
+pub use events::{
+    DisputeResolved, Initialized, VoucherAttested, VoucherClaimed, VoucherCreated,
+    VoucherDisputed, VoucherRefunded, VoucherSettled,
+};
 pub use interfaces::{ReceiptClient, RegistryClient};
 pub use types::{Config, DataKey, Voucher, VoucherError, VoucherStatus};
 
@@ -89,7 +95,7 @@ impl VoucherEscrow {
             },
         );
         extend_instance(&env);
-        env.events().publish((symbol_short!("init"),), admin);
+        Initialized { admin }.publish(&env);
         Ok(())
     }
 
@@ -157,10 +163,16 @@ impl VoucherEscrow {
         write_voucher(&env, &voucher);
         extend_instance(&env);
 
-        env.events().publish(
-            (symbol_short!("created"), funder, provider),
-            (id, service_code, amount, expires_at),
-        );
+        VoucherCreated {
+            funder,
+            provider,
+            voucher_id: id,
+            service_code,
+            amount,
+            created_at: now,
+            expires_at,
+        }
+        .publish(&env);
         Ok(id)
     }
 
@@ -185,8 +197,12 @@ impl VoucherEscrow {
         voucher.claimed_at = now;
         write_voucher(&env, &voucher);
 
-        env.events()
-            .publish((symbol_short!("claimed"), provider), voucher_id);
+        VoucherClaimed {
+            provider,
+            voucher_id,
+            claimed_at: now,
+        }
+        .publish(&env);
         Ok(())
     }
 
@@ -222,10 +238,13 @@ impl VoucherEscrow {
             .ok_or(VoucherError::MathOverflow)?;
         write_voucher(&env, &voucher);
 
-        env.events().publish(
-            (symbol_short!("attested"), attester),
-            (voucher_id, voucher.dispute_deadline),
-        );
+        VoucherAttested {
+            attester,
+            voucher_id,
+            attested_at: now,
+            dispute_deadline: voucher.dispute_deadline,
+        }
+        .publish(&env);
         Ok(())
     }
 
@@ -260,8 +279,12 @@ impl VoucherEscrow {
         voucher.status = VoucherStatus::Disputed;
         write_voucher(&env, &voucher);
 
-        env.events()
-            .publish((symbol_short!("disputed"), funder), (voucher_id, reason_code));
+        VoucherDisputed {
+            funder,
+            voucher_id,
+            reason_code,
+        }
+        .publish(&env);
         Ok(())
     }
 
@@ -326,10 +349,12 @@ impl VoucherEscrow {
             return Err(VoucherError::InvalidStatus);
         }
 
-        env.events().publish(
-            (symbol_short!("resolved"), admin),
-            (voucher_id, refund_funder),
-        );
+        DisputeResolved {
+            admin,
+            voucher_id,
+            refunded_funder: refund_funder,
+        }
+        .publish(&env);
 
         if refund_funder {
             Self::pay_back(&env, &config, &mut voucher);
@@ -398,10 +423,13 @@ impl VoucherEscrow {
             &voucher.amount,
         );
 
-        env.events().publish(
-            (symbol_short!("settled"), voucher.provider.clone()),
-            (voucher.id, net, fee),
-        );
+        VoucherSettled {
+            provider: voucher.provider.clone(),
+            voucher_id: voucher.id,
+            net,
+            fee,
+        }
+        .publish(&env);
         Ok(())
     }
 
@@ -417,9 +445,11 @@ impl VoucherEscrow {
         voucher.status = VoucherStatus::Refunded;
         write_voucher(env, voucher);
 
-        env.events().publish(
-            (symbol_short!("refunded"), voucher.funder.clone()),
-            (voucher.id, voucher.amount),
-        );
+        VoucherRefunded {
+            funder: voucher.funder.clone(),
+            voucher_id: voucher.id,
+            amount: voucher.amount,
+        }
+        .publish(&env);
     }
 }

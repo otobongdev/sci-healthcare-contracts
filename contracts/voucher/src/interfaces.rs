@@ -4,6 +4,7 @@ use soroban_sdk::{contractclient, Address, BytesN, Env};
 ///
 /// Declared locally, over primitives only, so the two contracts share no
 /// types and can be upgraded independently.
+#[allow(dead_code)]
 #[contractclient(name = "RegistryClient")]
 pub trait RegistryInterface {
     fn is_active_provider(env: Env, provider_addr: Address) -> bool;
@@ -12,6 +13,7 @@ pub trait RegistryInterface {
 }
 
 /// The slice of `sci-receipt` this contract depends on.
+#[allow(dead_code)]
 #[contractclient(name = "ReceiptClient")]
 pub trait ReceiptInterface {
     fn mint(

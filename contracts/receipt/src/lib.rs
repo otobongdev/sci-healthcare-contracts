@@ -15,8 +15,35 @@
 //! beneficiary reference they were minted against.
 
 use soroban_sdk::{
-    contract, contracterror, contractimpl, contracttype, symbol_short, Address, BytesN, Env,
+    contract, contracterror, contractevent, contractimpl, contracttype, Address, BytesN, Env,
 };
+
+/// Typed contract events. Field names are part of the public interface:
+/// the indexer decodes these by name.
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Initialized {
+    pub admin: Address,
+}
+
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct MinterChanged {
+    pub minter: Address,
+}
+
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ReceiptMinted {
+    #[topic]
+    pub beneficiary_ref: BytesN<32>,
+    #[topic]
+    pub provider: Address,
+    pub voucher_id: u64,
+    pub service_code: u32,
+    pub amount: i128,
+    pub settled_at: u64,
+}
 
 const DAY_IN_LEDGERS: u32 = 17_280;
 const INSTANCE_TTL_THRESHOLD: u32 = 7 * DAY_IN_LEDGERS;
@@ -84,7 +111,7 @@ impl ReceiptBook {
         env.storage()
             .instance()
             .extend_ttl(INSTANCE_TTL_THRESHOLD, INSTANCE_TTL_EXTEND);
-        env.events().publish((symbol_short!("init"),), admin);
+        Initialized { admin }.publish(&env);
         Ok(())
     }
 
@@ -95,7 +122,7 @@ impl ReceiptBook {
         env.storage()
             .instance()
             .extend_ttl(INSTANCE_TTL_THRESHOLD, INSTANCE_TTL_EXTEND);
-        env.events().publish((symbol_short!("minter"),), minter);
+        MinterChanged { minter }.publish(&env);
         Ok(())
     }
 
@@ -128,13 +155,14 @@ impl ReceiptBook {
             return Err(ReceiptError::ReceiptExists);
         }
 
+        let settled_at = env.ledger().timestamp();
         let receipt = Receipt {
             voucher_id,
             beneficiary_ref: beneficiary_ref.clone(),
             provider: provider.clone(),
             service_code,
             amount,
-            settled_at: env.ledger().timestamp(),
+            settled_at,
         };
         env.storage().persistent().set(&key, &receipt);
         env.storage()
@@ -150,10 +178,15 @@ impl ReceiptBook {
             PERSISTENT_TTL_EXTEND,
         );
 
-        env.events().publish(
-            (symbol_short!("mint"), beneficiary_ref, provider),
-            (voucher_id, service_code, amount),
-        );
+        ReceiptMinted {
+            beneficiary_ref,
+            provider,
+            voucher_id,
+            service_code,
+            amount,
+            settled_at,
+        }
+        .publish(&env);
         Ok(())
     }
 
